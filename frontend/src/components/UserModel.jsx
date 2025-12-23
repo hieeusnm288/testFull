@@ -3,7 +3,7 @@ import { Button, Form, Input, Modal, DatePicker, Select } from 'antd';
 import { createUser, updateUser } from "../service/userService";
 import moment from 'moment';
 
-const UserModel = ({ isOpen, onClose, user, onSuccess }) => {
+const UserModel = ({ isOpen, onClose, user, onSuccess, onSuccessAdd }) => {
     const [form] = Form.useForm();
     useEffect(() => {
         if (user) {
@@ -29,6 +29,17 @@ const UserModel = ({ isOpen, onClose, user, onSuccess }) => {
                     if (onSuccess) {
                         onSuccess();
                     }
+                }).catch((error) => {
+                    if (error.response?.data?.message === 'Email already exists') {
+                        form.setFields([
+                            {
+                                name: 'email',
+                                errors: ['Email already exists!'],
+                            },
+                        ]);
+                    } else {
+                        console.error('Update Failed:', error);
+                    }
                 });
             }).catch((info) => {
                 console.log('Validate Failed:', info);
@@ -42,8 +53,19 @@ const UserModel = ({ isOpen, onClose, user, onSuccess }) => {
                 createUser(formattedValues).then(() => {
                     onClose();
                     form.resetFields();
-                    if (onSuccess) {
-                        onSuccess();
+                    if (onSuccessAdd) {
+                        onSuccessAdd();
+                    }
+                }).catch((error) => {
+                    if (error.response?.data?.message === 'Email already exists') {
+                        form.setFields([
+                            {
+                                name: 'email',
+                                errors: ['Email already exists!'],
+                            },
+                        ]);
+                    } else {
+                        console.error('Create Failed:', error);
                     }
                 });
             }).catch((info) => {
