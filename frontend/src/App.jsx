@@ -15,14 +15,11 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-
   useEffect(() => {
     const fetchUsers = async () => {
-      setLoading(true);
       const usersData = await getUsers(page, sortBy, sortOrder);
       setUsers(usersData.data);
       setTotalUsers(usersData.totalUsers);
-      setLoading(false);
     };
     fetchUsers();
   }, [page, sortBy, sortOrder]);
